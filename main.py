@@ -173,7 +173,13 @@ def agregar():
 
 def editar():
     global datos
+    datos["codigo"] = datos["codigo"].astype(int)
     codigo = input("Ingrese el código a editar: ")
+    codigo = int(codigo)
+    if datos["codigo"].isin([codigo]).any() == False:
+        print(f"No existe el código {codigo}.")
+        return
+
     columna = input(
         "Ingrese la columna a editar (codigo, sexo, nombre, edad, ciudad): "
     )
@@ -186,6 +192,8 @@ def editar():
         while nuevo_valor not in SEXO:
             print("Error: El sexo debe ser 'F' o 'M'.")
             nuevo_valor = input(f"Ingrese el nuevo valor para {columna} (F/M): ")
+
+        nuevo_valor = nuevo_valor.upper()
     elif columna == "ciudad":
         nuevo_valor = input(
             f"Ingrese el nuevo valor para {columna} (1: Bucaramanga, 2: Giron, 3: Florida, 4: Piedecuesta): "
@@ -195,8 +203,15 @@ def editar():
             nuevo_valor = input(
                 f"Ingrese el nuevo valor para {columna} (1: Bucaramanga, 2: Giron, 3: Florida, 4: Piedecuesta): "
             )
+        nuevo_valor = int(nuevo_valor)
     else:
         nuevo_valor = input(f"Ingrese el nuevo valor para {columna}: ")
+
+    if columna == "nombre":
+        nuevo_valor = nuevo_valor.upper()
+
+    if columna == "edad":
+        nuevo_valor = int(nuevo_valor)
 
     datos.loc[datos["codigo"] == codigo, columna] = nuevo_valor
 
@@ -207,6 +222,7 @@ def editar():
 def borrar():
     global datos
     codigo = input("Ingrese el código del registro a borrar: ")
+    codigo = int(codigo)
 
     if datos["codigo"].isin([codigo]).any():
         datos = datos[datos["codigo"] != codigo]
